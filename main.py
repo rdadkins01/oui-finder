@@ -63,7 +63,7 @@ def parse_mac_address(mac_address) -> str:
         if len(mac_address) != 12:
             raise Exception("MAC address incorrect length or using unknown delimeters")
         else:
-            return mac_address.upper()
+            mac =  mac_address.upper()
         
     if len(mac) != 12:
         raise Exception(f"MAC address incorrect length, length: {len(mac)}")
