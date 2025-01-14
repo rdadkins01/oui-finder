@@ -4,7 +4,7 @@ import gzip
 import os
 
 
-def get_oui_data():
+def get_oui_data() -> None:
     wireshark_oui_url = "https://www.wireshark.org/download/automated/data/"
     oui_file = "manuf.gz"
     r = requests.get(wireshark_oui_url + oui_file, stream=True)
@@ -46,6 +46,53 @@ def get_oui_data():
     return
 
 
+def parse_mac_address(mac_address) -> str:
+    '''
+    Expects mac addresses with a ":", ".", or no delimeter.
+    
+    Returns a string of the provided MAC without delimiteres in uppercase
+    in the format of the file pulled from Wireshark
+    '''
+    if ":" in mac_address:
+        mac = "".join(mac_address.replace(":", "")).upper()
+
+    elif "." in mac_address:
+        mac =  "".join(mac_address.replace(".", "")).upper()
+
+    else:
+        if len(mac_address) != 12:
+            raise Exception("MAC address incorrect length or using unknown delimeters")
+        else:
+            return mac_address.upper()
+        
+    if len(mac) != 12:
+        raise Exception(f"MAC address incorrect length, length: {len(mac)}")
+    else:
+        parsed_mac = ""
+        for i in range(len(mac)):
+            if i*2 <= len(mac) and i != 0:
+                parsed_mac += mac[(i*2)-2:i*2]
+                if i*2 < len(mac):
+                    parsed_mac += ":"
+        return parsed_mac
+
+
+def get_vendor(oui_data, mac_address, name="short") -> str:
+    '''
+    oui_data: Requires json oui data from get_oui_data()
+    mac_address: takes mac address and tries to parse it.
+    name: refers to what Vendor format to return, short or long. Default is short.
+
+    Returns string
+    '''
+
+    mac = parse_mac_address(mac_address)
+    print(mac)
+
+
+    return
+
+
 def main():
 
     # Download wireshark OUI database if it doesn't already exist
@@ -55,7 +102,7 @@ def main():
     with open("./oui_manuf.json", "r") as file:
         oui_data = json.load(file)
 
-    print(oui_data)
+    get_vendor(oui_data, "001b.c50c.9000", "long")
 
 
 if __name__ == "__main__":
