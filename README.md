@@ -8,7 +8,7 @@ This script could instead have used a public API to retrieve OUI data each time 
 
 Some notes on the format the MAC address is provided in. This script expects a 12 character MAC at the moment. It also only accepts colons (:) and periods (.) as delimiters. However, you can provide a mix of colons and periods in any position and they will be stripped. For example, ".FC:F.E:C:2.000.000:" is accepted.
 
-### Usage
+### CLI Usage
 ```Python
 usage: main.py [-h] [-s] macaddress
 
