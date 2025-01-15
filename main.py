@@ -2,6 +2,7 @@ import requests
 import json
 import gzip
 import os
+import argparse
 
 
 def get_oui_data() -> None:
@@ -91,18 +92,25 @@ def get_vendor(oui_data, mac_address, name="short") -> str:
 
     if mac[0:14] in oui_data:
         return oui_data[mac[0:14]][name]
-    
     elif mac[0:11] in oui_data:
         return oui_data[mac[0:11]][name]
-
     elif mac[0:8] in oui_data:
         return oui_data[mac[0:8]][name]
-    
     else:
         return f"{mac} not found"
-    
+
 
 def main():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("macaddress", help="Enter the mac address to be queried.")
+    parser.add_argument("-s", "--short", help="Returns short vendor name", action="store_true")
+    args = parser.parse_args()
+
+    if args.short:
+        name_format = "short"
+    else:
+        name_format = "long"
 
     # Download wireshark OUI database if it doesn't already exist
     if not os.path.exists("./oui_manuf.json"):
@@ -111,7 +119,7 @@ def main():
     with open("./oui_manuf.json", "r") as file:
         oui_data = json.load(file)
 
-    print(get_vendor(oui_data, "00:1B:C5:0C:90:00", "long"))
+    print(get_vendor(oui_data, args.macaddress, name_format))
 
 
 if __name__ == "__main__":
