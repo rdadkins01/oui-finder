@@ -53,11 +53,8 @@ def parse_mac_address(mac_address) -> str:
     Returns a string of the provided MAC without delimiteres in uppercase
     in the format of the file pulled from Wireshark
     '''
-    if ":" in mac_address:
-        mac = "".join(mac_address.replace(":", "")).upper()
-
-    elif "." in mac_address:
-        mac =  "".join(mac_address.replace(".", "")).upper()
+    if ":" in mac_address or "." in mac_address:
+        mac = "".join(mac_address.replace(":", "").replace(".", "").upper())
 
     else:
         if len(mac_address) != 12:
@@ -85,13 +82,25 @@ def get_vendor(oui_data, mac_address, name="short") -> str:
 
     Returns string
     '''
+    if name == "short":
+        name = "short_name"
+    elif name == "long":
+        name = "long_name"
 
     mac = parse_mac_address(mac_address)
-    print(mac)
 
+    if mac[0:14] in oui_data:
+        return oui_data[mac[0:14]][name]
+    
+    elif mac[0:11] in oui_data:
+        return oui_data[mac[0:11]][name]
 
-    return
-
+    elif mac[0:8] in oui_data:
+        return oui_data[mac[0:8]][name]
+    
+    else:
+        return f"{mac} not found"
+    
 
 def main():
 
@@ -102,7 +111,7 @@ def main():
     with open("./oui_manuf.json", "r") as file:
         oui_data = json.load(file)
 
-    get_vendor(oui_data, "001b.c50c.9000", "long")
+    print(get_vendor(oui_data, "00:1B:C5:0C:90:00", "long"))
 
 
 if __name__ == "__main__":
