@@ -28,9 +28,7 @@ def get_oui_data() -> None:
     temp_dict = {}
     for line in parsed_file:
         if "\t" in line:
-            print(line)
             mac = line.split("\t")[0].strip()
-            print(mac)
             if "/" in mac:
                 mask = mac.split("/")[1]
                 mac = mac.split("/")[0]
@@ -47,7 +45,7 @@ def get_oui_data() -> None:
     return
 
 
-def parse_mac_address(mac_address) -> str:
+def parse_mac_address(mac_address: str) -> str:
     '''
     Expects mac addresses with a ":", ".", or no delimeter.
     
@@ -75,13 +73,13 @@ def parse_mac_address(mac_address) -> str:
         return parsed_mac
 
 
-def get_vendor(oui_data, mac_address, name="short") -> str:
+def get_vendor(oui_data: dict, mac_address: str, name: str="short") -> str:
     '''
-    oui_data: Requires json oui data from get_oui_data()
+    oui_data: Requires dictionary of json oui data from get_oui_data()
     mac_address: takes mac address and tries to parse it.
     name: refers to what Vendor format to return, short or long. Default is short.
 
-    Returns string
+    Returns string of the Vendor
     '''
     if name == "short":
         name = "short_name"
